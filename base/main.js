@@ -45,7 +45,7 @@ var fakevar = 2;
 this.fakevar2 = 3;
 console.log(truevar);
 console.log(fakevar);
-console.log(fakevar2);
+// console.log(fakevar2);
 // console.log(delete truevar);
 // console.log(delete fakevar);
 console.log(delete this.fakevar2);
@@ -70,9 +70,9 @@ var g2 = function xg() {
     y = g();
     return y;
 }
-console.log(g2(), y);
-console.log(f(), x);
-console.log(g(), y); // g() -> 'local'; y -> 'globalchanged'
+// console.log(g2(), y);
+// console.log(f(), x);
+// console.log(g(), y); // g() -> 'local'; y -> 'globalchanged'
 
 // 标签语句
 var token = 10;
@@ -124,6 +124,112 @@ function f3(o) {
     console.log(typeof o);
 }
 f3(new Date());
+
+
+// 6.1.1
+console.log('6.1.1');
+var empty = {}; //没有任何属性的对象
+var point = {x:0, y:0}; //两个属性
+var point2 = { x:point.x, y:point.y+1 }; //使用point属性的对象
+var book = {
+    "main title": "JavaScript", //属性名字里有空格，必须使用字符串表示
+    "sub-title": "The Definitive Guide", //属性名字里有连字符，必须使用字符串表示
+    "for": "all audiences", // "for"是保留字，必须用引号
+    author: { //这个属性的值是一个对象
+        firstname: "David", //注意，这里的属性名都没有引号
+        surname: "Flanagan"
+    }
+};
+
+// 6.1.2 通过new创建对象
+var o = new Object(); //创建空对象
+var a = new Array(); //空数组
+var d = new Date(); //时间的date对象
+// var r = new ReqExp("js"); //创建一个可以进行模式匹配的RegExp对象
+
+console.log(typeof o);
+console.log(typeof a);
+
+var o1 = Object.create({x:1, y:2});
+console.log("x:" + o1.x + "y:" + o1.y);
+var p1 = Object.create(point);
+p1.x = 1;
+p1.y = 2;
+console.log("x:" + p1.x + " y:" + p1.y);
+
+var o2 = Object.create(null);
+var o3 = Object.create(Object.prototype);
+
+// inherit() 返回一个继承自原型对象p的属性的新对象
+// 优先使用ECMAScript 5中的Object.create()函数
+// 如果不存在Object.create(), 则退化使用其他方法
+function inherit(p) {
+    if (p == null) throw TypeError(); // p是一个对象，但不能是null
+    if (Object.create)
+        return Object.create(p);
+    var t = typeof p;
+    if (t !== "object" && t !== "function") throw TypeError();
+    function f() {}
+    f.prototype = p;
+    return new f();
+}
+
+var o10 = {x:"don't change this value"};
+// library_function(inherit(o10)); //防止对o10的意外修改
+
+// 6.2 属性的查询和设置
+var author = book.author;
+console.log("name: " + author.surname);
+var title = book["main title"];
+console.log("title: " + title);
+
+book.edition = 6;
+book["main title"] = "ECMAScript 5";
+console.log("title: " + book["main title"]);
+
+// 6.2.2继承
+console.log("6.2.2");
+var o11 = {};
+o11.x = 1;
+var p = inherit(o11);
+p.y = 2;
+p.x = 5;
+var q = inherit(p);
+q.z = 3;
+var s = q.toString();
+console.log(q.x + q.y);
+console.log("o11.x: " + o11.x);
+console.log(s);
+
+// 9.1
+console.log('9.1');
+// 这个工厂方法返回一个新的“范围对象”
+function range(from, to) {
+    // 使用inherit()函数来创建对象
+    var r = inherit(range.methods);
+
+    r.from = from;
+    r.to = to;
+    return r;
+}
+
+range.methods = {
+    includes: function(x) {
+        return this.from <= x && x <= this.to;
+    },
+
+    foreach: function(f) {
+        for (var x = Math.ceil(this.from); x <= this.to; x++) f(x);
+    },
+
+    toString: function() {return "(" + this.from + "..." + this.to + ")";}
+};
+
+var r = range(1, 3);
+r.includes(2);
+r.foreach(console.log);
+console.log(r);
+
 
 
 // function inherit(Target, Origin) {
