@@ -1,5 +1,5 @@
 //开启严格模式
-"use strict";
+// "use strict";
 
 // 3.9
 scope = "global";
@@ -124,3 +124,104 @@ function f3(o) {
     console.log(typeof o);
 }
 f3(new Date());
+
+
+// function inherit(Target, Origin) {
+//     function F() {}
+//     F.prototype = Origin.prototype;
+//     Target.prototype = new F();
+//     Target.prototype.constuctor = Target;
+//     Target.prototype.uber = Origin.prototype;
+// }
+
+//圣杯模式
+var inherit = (function () {
+    var F = function () {};
+    return function (Target, Origin) {
+        F.prototype = Origin.prototype;
+        Target.prototype = new F();
+        Target.prototype.constuctor = Target;
+        Target.prototype.uber = Origin.prototype;
+    };
+}());
+
+Father.prototype.lastName = "Liang";
+function Father() {
+    this.secondName = "xiaoqing";
+}
+
+function Son() {
+    this.secondName = "jingcheng";
+}
+
+inherit(Son, Father);
+
+var son = new Son();
+var father = new Father();
+
+// var num = window.promp
+
+function mul(n) {
+    if (n <= 1)
+        return 1;
+    return n * mul(n - 1);
+}
+
+var str = false + 1;
+document.write(str);
+
+var demo = false == 1;
+document.write(demo);
+
+if (typeof(a) && -true + (+undefined) + "") {
+    document.write('基础扎实');
+}
+
+if (11 + "11" * 2 == 33) {
+    document.write('基础扎实2');
+}
+
+var x = 1;
+if (function f() {}) {
+    x += typeof f;
+    console.log(typeof f);
+}
+console.log(x);
+
+var index_random = Math.random() * 4;
+var index = Math.floor(index_random);
+console.log(index_random);
+console.log(index);
+
+console.log("this");
+var a = 5;
+function test() {
+    a = 0;
+    console.log(a);
+    console.log("this is " + this);
+    console.log(this.a);
+    var a;
+    console.log(a);
+}
+test();
+new test();
+
+console.log("this2");
+
+function print() {
+    var marty = {
+        name: "marty",
+        printName: function(){console.log(this.name);}
+    }
+    var test1 = { name: "test1" };
+    var test2 = { name: "test2" };
+    var test3 = { name: "test3" };
+    test3.printName = marty.printName;
+    var printName2 = marty.printName.bind({name: 123});
+    marty.printName.call(test1);
+    marty.printName.apply(test2);
+    marty.printName();
+    printName2();
+    test3.printName();
+}
+print();
