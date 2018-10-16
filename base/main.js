@@ -331,3 +331,162 @@ function print() {
     test3.printName();
 }
 print();
+
+//function 返回this，用于方法连写
+
+var xliang = {
+    song : function() {
+        console.log('I am singer!');
+        return this;
+    },
+    play : function () {
+        console.log("I am playing!");
+        return this;
+    },
+    sleep : function () {
+        console.log("I am going to sleep!");
+        return this;
+    },
+    eat : function() {
+        console.log('Fresh meat!!!');
+        return this;
+    }
+}
+xliang.song().sleep().play().sleep().eat().sleep();
+
+// 枚举
+var x2 = {
+    name : "123",
+    age : 31,
+    sex : "male",
+    height : 172,
+    weight : 67,
+    __proto__ : {
+        lastName : "liang"
+    }
+}
+
+function meiju() {
+    for (var prop in x2) {
+        if (x2.hasOwnProperty(prop)) {
+            console.log(x2[prop]);
+        }
+    }
+}
+
+meiju();
+
+
+// 浅拷贝
+// 1.判断是不是原始值
+// 2.判断是数组还是对象
+// 3.建立相应的数组或对象
+function test_clone() {
+
+    var obj = {
+        name : "abc",
+        age : 123,
+        card : ['visa', 'master'],
+        wifi : {
+            name : "Tenday",
+            ssid : {
+                name : "ssid"
+            }
+        }
+    }
+    
+    var obj1 = {}
+    for (var prop in obj) {
+        obj1[prop] = obj[prop];
+    }
+
+    console.log(obj);
+    //修改obj的值
+    obj.name = "abc1";
+    obj.age = 10;
+    obj.card[0] = 'vs';
+    obj.wifi.name = 'TTTTT';
+
+    //
+    console.log(obj);
+    console.log(obj1);
+}
+test_clone();
+
+//深拷贝
+function deepClone(origin, target) {
+    var target = target || {},
+        toStr = Object.prototype.toString,
+        arrStr = "[object Array]";
+    
+    for (var prop in origin) {
+        if (origin.hasOwnProperty(prop)) {
+            if (origin[prop] !== "null" && typeof(origin[prop]) == 'object') {
+                if (toStr.call(origin[prop]) == arrStr) {
+                    target[prop] = []
+                } else {
+                    target[prop] = {}
+                }
+
+                //递归
+                deepClone(origin[prop], target[prop]);
+
+            } else {
+                target[prop] = origin[prop];
+            }
+        }
+    }
+}
+
+function test_deepClone() {
+    console.log("test_deepClone");
+
+    var obj = {
+        name : "abc",
+        age : 123,
+        card : ['visa', 'master'],
+        wifi : {
+            name : "Tenday",
+            ssid : {
+                name : "ssid"
+            }
+        }
+    }
+
+    var obj2 = {}
+
+    deepClone(obj, obj2);
+
+    console.log(obj);
+    console.log(obj2);
+
+    //修改obj
+    obj.name = "abc1";
+    obj.age = 10;
+    obj.card[0] = 'vs';
+    obj.wifi.name = 'TTTTT';
+
+    console.log(obj);
+    console.log(obj2);
+}
+
+test_deepClone();
+
+// 修改array原型方法
+var arr = [1, 2, 3];
+Array.prototype.push = function () {
+    for (var i = 0; i < arguments.length; i++) {
+        this[this.length] = arguments[i];
+    }
+}
+arr.push(5);
+arr.push(10);
+arr.push("abc");
+console.log(arr);
+
+// array sort
+var arr = [2, 3, 1, 7, 3, 2];
+arr.sort(function (a, b) {
+    return a > b ? 1 : 0;
+});
+console.log(arr);
